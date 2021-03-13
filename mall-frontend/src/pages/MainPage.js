@@ -1,12 +1,12 @@
 import React from 'react';
-import Navigation from '../components/nav/Navigation';
+import NavigationContainer from '../containers/nav/NavigationContainer';
 import HeaderContainer from '../containers/common/HeaderContainer';
 
 const MainPage = () => {
     return (
         <div>
             <HeaderContainer />
-            <Navigation />
+            <NavigationContainer />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Responsive from '../common/Responsive';
@@ -23,6 +23,10 @@ const Wrapper = styled(Responsive)`
         justify-content: space-between;
         li {
             line-height: 2rem;
+            .searchBar {
+                width: 100%;
+                position: relative;
+            }
         }
     }
 `
@@ -31,9 +35,31 @@ const SearchWrap = styled.div`
     svg {
         font-size: 2rem;
     }
+    border-bottom: 2px solid ${palette.gray[5]};
+    margin-bottom: 0.2rem;
+`
+const SearchBar = styled(StyledInput)`
+    border-bottom: none;
+    &:focus {
+        color: $oc-teal-7;
+        border-bottom: none;
+    }
 `
 
-const Navigation = () => {
+const SearchHistory = styled.div`
+    width: 90%;
+    padding: 5px 10px 10px 10px;  
+    position: absolute;
+    background-color: white;
+    box-shadow: 1px 1px 10px gray;
+    border-radius: 4px 4px 4px 4px;
+
+    .query {
+        border-bottom: 1px solid ${palette.gray[5]};
+    }
+`
+
+const Navigation = ({onChange, val, queries}) => {
     return (
         <NavigationBlock>
             <Wrapper>
@@ -48,10 +74,22 @@ const Navigation = () => {
                     <li><Link to='/shop/bag'>BAG</Link></li>
                     <li><Link to='/shop/accessories'>ACCESSORIES</Link></li>
                     <li>
-                        <SearchWrap>   
-                            <StyledInput />
-                            <BiSearch />
-                        </SearchWrap>
+                        <div className='searchBar'>
+                            <SearchWrap>   
+                                <SearchBar
+                                    autoComplete="off" 
+                                    name="search"
+                                    onChange={onChange}
+                                    value={val}
+                                />
+                                <BiSearch />
+                            </SearchWrap>
+                            {queries.length !== 0 && val !== '' && <SearchHistory>
+                                {queries.map(q => (
+                                    <div className='query'>{q}</div>
+                                ))} 
+                            </SearchHistory>}
+                        </div>
                     </li>
                 </ul>
             </Wrapper>

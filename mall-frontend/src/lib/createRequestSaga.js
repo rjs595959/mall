@@ -26,7 +26,7 @@ export default function createRequestSaga(type, request) {
                 payload: e,
                 error: true,
             });
-            yield put(finishLoading(type));
         }
+        yield put(finishLoading(type));
     }
 }
