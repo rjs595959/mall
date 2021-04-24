@@ -10,6 +10,7 @@ const NavigationBlock = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-bottom: 1rem;
 `
 
 const Wrapper = styled(Responsive)`
@@ -84,11 +85,17 @@ const Navigation = ({onChange, val, queries}) => {
                                 />
                                 <BiSearch />
                             </SearchWrap>
-                            {queries.length !== 0 && val !== '' && <SearchHistory>
-                                {queries.map(q => (
-                                    <div className='query'>{q}</div>
-                                ))} 
-                            </SearchHistory>}
+                            {queries.length !== 0 &&  
+                                (
+                                    val !== '' && 
+                                    (
+                                        <SearchHistory>
+                                            {queries.map(query => (
+                                                <div className='query' key={query}>{query}</div>
+                                            ))} 
+                                        </SearchHistory>
+                                    )
+                                )}
                         </div>
                     </li>
                 </ul>

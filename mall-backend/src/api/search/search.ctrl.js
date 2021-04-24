@@ -1,3 +1,7 @@
 export const search = async ctx => {
-    ctx.body = ['abc', 'bcd', 'cde'];
+    ctx.body = {
+        queries : [
+            'abc', 'bcd', 'cde'
+        ]
+    };
 }

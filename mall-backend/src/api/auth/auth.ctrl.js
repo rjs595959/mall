@@ -22,7 +22,7 @@ export const register = async ctx => {
         return
     }
 
-    const { username, password, nickname} = ctx.request.body;
+    const { username, password, nickname } = ctx.request.body;
     try {
         const exists = await User.findByUsername(username)
         if (exists) {

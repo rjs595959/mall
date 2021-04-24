@@ -17,7 +17,7 @@ export const changeField = createAction(
         form,
         key,
         value
-    })
+    })  
 );
 
 export const initializeForm = createAction(INITIALIZE_FORM, form => form);
@@ -60,7 +60,6 @@ const initialState = {
         password : '',
     },
     auth: null,
-    nicknameCheck: true,
     authError: null,
 };
 
@@ -95,7 +94,6 @@ const auth = handleActions(
         }),
         [CHECK_NICKNAME_SUCCESS] : (state, {payload: check}) => ({
             ...state,
-            nicknameCheck : check,
             authError: null,
         }),
         [CHECK_NICKNAME_FAILURE] : (state, {payload: error}) => ({

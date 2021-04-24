@@ -32,13 +32,11 @@ const nav = handleActions({
         ...state,
         val,
     }),
-    [SEARCH_SUCCESS] : (state, payload) => {
-        return {
+    [SEARCH_SUCCESS] : (state, {payload: queries}) => ({
                 ...state,
-                queries : payload['payload'],
+                queries : queries['queries'],
                 searchError: null,
-            }
-    },
+    }),
     [SEARCH_FAILURE] : (state, {payload : e}) => ({
         ...state,
         searchError : e
