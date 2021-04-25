@@ -48,13 +48,7 @@ const ReadPost = ({contents=['aaaa', 'a','a\na\na\n\an']}) => {
                     {contents[0]}
                 </div>
                 <div className="contents">
-                    {contents.map((content, idx) => {
-                        if(idx === 0) return '';
-                        else {
-                            let replaced_content = content.split('\n');
-                            
-                        }
-                    })}
+                    
                 </div>
                 <div className='button'>
                     <Button>수정</Button>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Responsive from '../common/Responsive';
@@ -36,7 +36,6 @@ const SearchWrap = styled.div`
     svg {
         font-size: 2rem;
     }
-    border-bottom: 2px solid ${palette.gray[5]};
     margin-bottom: 0.2rem;
 `
 const SearchBar = styled(StyledInput)`

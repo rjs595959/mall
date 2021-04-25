@@ -1,7 +1,7 @@
 require('dotenv').config();
 import Koa from 'koa';
 import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
+import BodyParser from 'koa-body';
 import mongoose from 'mongoose';
 import api from './api';
 import jwtMiddleware from './lib/jwtMiddleware';
@@ -26,7 +26,7 @@ const app = new Koa();
 const router = new Router();
 
 router.use('/api', api.routes());
-app.use(bodyParser());
+app.use(BodyParser({'multipart' : true}));
 app.use(jwtMiddleware);
 
 app.use(router.routes()).use(router.allowedMethods());

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Responsive from '../common/Responsive';
 import Button from '../common/Button';
+import CategoryList from './CategoryList';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
@@ -39,11 +40,20 @@ const Wrapper = styled(Responsive)`
             width: 5rem;
         }
     }
+    .price {
+        outline: none;
+        border: 1px solid ${palette.gray[5]};
+        border-radius: 3px 3px 3px 3px;
+        height: 2rem;
+    }
 `
 
 const WritePost = () => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
+    const [price, setPrice] = useState('');
+    const [category, setCategory] = useState('');
+    const [categories, setCategories] = useState([]);
     const quillRef = useRef();
 
     const modules = {
@@ -67,14 +77,28 @@ const WritePost = () => {
         
         let editor = quillRef.current.getEditor();
         let contents = JSON.stringify(editor.getContents());
-        await axios.post('/api/post/write', {
-            'title' : title,
-            'contents' : contents,
-        }).then(response => {
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('contents', contents);
+        formData.append('price', price);
+        formData.append('categories', categories);
+        
+        const config = {header : {'content-type' : 'multipart/form-data'}};
+        await axios.post('/api/post/write', formData, config).then(response => {
             console.log(response)
         }).catch(e => {
             console.log(e);
         })
+    }
+
+    const categoryHandler = (event) => {
+        if(event.key === "Enter") {
+            if(categories.length < 5) {
+                setCategories(categories.concat(category));
+                setCategory('');
+            }
+        }
     }
 
     return (
@@ -82,7 +106,7 @@ const WritePost = () => {
             <Wrapper>
                 <form onSubmit={onSubmit}>
                     <div>
-                        <input name="title" className="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
+                        <input className="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
                         <ReactQuill
                             value={text}
                             onChange={setText}
@@ -92,9 +116,25 @@ const WritePost = () => {
                             ref={quillRef}
                         />
                     </div>
-                    <div className='button'>
-                        <Button type="submit">저장</Button>
-                        <Button>취소</Button>
+                    <div>
+                        <p>
+                            가격 : <input className='price' value={price} onChange={(e) => setPrice(e.target.value)} />
+                        </p>
+                        <p>
+                            카테고리 : <input className='category' value={category} 
+                                              onChange={(e) => setCategory(e.target.value)} 
+                                              onKeyDown={categoryHandler}
+                                       />
+                        </p>
+                    </div>
+                    <div>
+                        <div>
+                            <CategoryList categories={categories} />
+                        </div>
+                        <div className='button'>
+                            <Button type="submit">저장</Button>
+                            <Button>취소</Button>
+                        </div>
                     </div>
                 </form>
             </Wrapper>

@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+
 import * as postCtrl from './post.ctrl';
 
 const post = new Router();
