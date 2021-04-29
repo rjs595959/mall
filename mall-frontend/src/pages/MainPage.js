@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import NavigationContainer from '../containers/nav/NavigationContainer';
-import ShowList from '../containers/posts/ShowList';
+import ShowListContainer from '../containers/posts/ShowListContainer';
 
 const MainPage = () => {
     const {category} = useParams();
@@ -10,7 +10,7 @@ const MainPage = () => {
         <div>
             <HeaderContainer />
             <NavigationContainer />
-            <ShowList category={category}/>
+            <ShowListContainer category={category}/>
         </div>
     )
 }

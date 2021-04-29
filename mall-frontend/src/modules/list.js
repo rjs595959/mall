@@ -16,7 +16,7 @@ export function* listSaga() {
 }
 
 const initialState = {
-    list : [{imgUrl: 'a', name : 'b', price : '1000', category: '1'}],
+    list : [],
     error : null,
 };
 

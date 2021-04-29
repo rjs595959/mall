@@ -2,78 +2,52 @@ import fs from 'fs';
 import Joi from 'joi';
 import crypto from 'crypto';
 import Post from '../../models/post';
+import Blob from 'node-blob';
 
-async function DataUrlToFile(image) {
-    let regex = /^data:.+\/(.+);base64,(.*)$/;
-
-    let matches = image.match(regex);
-    let ext = matches[1];
-    let data = matches[2];
-    let buffer = Buffer.from(data, 'base64');
-    try {
-        let name = makeRandomFileName(ext)
-        fs.writeFileSync('images/'+ name, buffer);
-        return name;
-    } catch(e) {
-        console.log(e);
-    }
-}
-
-function makeRandomFileName(ext) {
-    return (crypto.createHash('sha256').update(new Date().toString()).digest('hex')).toString() + '.' + ext;
-}
-
+/**
+ * @list 
+ * {GET} http://localhost:4000/api/post/list?category=
+ */
 export const list = async ctx => {
     try {
         const {category} = ctx.query;
-        const posts = await Post.find({category : category}).exec();
-        ctx.body = posts;
+        let results = await Post.findCategory(category);
+        ctx.body = results;
     } catch(e) {
         ctx.throw(500, e);
     }
 }
 
-export const write = async ctx => {
-    let contents = JSON.parse(ctx.request.body.contents)['ops']
-                       .filter(content => content['insert'] !== '\n' );
-    let {title, price, categories} = ctx.request.body;
+/**
+ * @write 
+ * {POST} http://localhost:4000/api/post/write
+ * title, html, price, author, thumbnail
+ */
 
-    // 입력예시
-    // { insert : { image : 'data:image/~' }} => [fileName, undefined]
-    // { attributes : { italic: true, bold: true }, insert: 'aaa' } => ['aaa', {italic:true, bold: true}]
-    // { insert : '\nf\ndaf\ndaf\nas\nfd\nasf\nsdaf\n\n' } => { insert : 'f' }, {insert : 'daf'} => ['f', undefined], ['daf', undefined]
-    let thumbnail, finalContents = []
-    for(let content of contents) {
-        // image file 저장하기
-        if(content['insert']['image'] != undefined) {
-            if(thumbnail == undefined) {
-                thumbnail = await DataUrlToFile(content['insert']['image']);
-                finalContents.push([thumbnail, undefined]);
-            }
-            else {
-                finalContents.push([await DataUrlToFile(content['insert']['image']), undefined]);
-            }
-        }
-        else {
-            if(content['attributes'] != undefined) {
-                finalContents.push([content['insert'], JSON.stringify(content['attributes'])]);
-            }
-            else {
-                let splitedContents = content['insert'].split('\n').filter(content => content !== '');
-                for(let splitedContent of splitedContents) {
-                    finalContents.push([splitedContent, undefined]);
-                }
-            }
-        }
+export const write = async ctx => { 
+    let thumbnail, files = ctx.request.files;
+    let {title, html, price} = ctx.request.body;
+    let categories = JSON.parse(ctx.request.body.categories);
+
+    let regex = /<imageFile>/
+    let index=-1
+
+    html = html.replace(regex, function() {
+        index += 1
+        return '"' + files[index].path + '"'
+    })
+
+    if(files[0] !== undefined) {
+        thumbnail = files[0].path;
     }
-
+    
     try {
         let post = new Post({
             title,
+            html, 
             price,
             author: ctx.state.user.nickname,
             thumbnail,
-            contents: finalContents,
             categories,
         });
         await post.save();

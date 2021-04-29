@@ -1,12 +1,11 @@
-import React, {  useState, useRef } from 'react';
+import React, { useRef } from 'react';
+import CategoryList from './CategoryList';
 import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Responsive from '../common/Responsive';
 import Button from '../common/Button';
-import CategoryList from './CategoryList';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
 
 const WritePostBlock = styled.div`
     width: 100%;
@@ -48,14 +47,7 @@ const Wrapper = styled(Responsive)`
     }
 `
 
-const WritePost = () => {
-    const [text, setText] = useState('');
-    const [title, setTitle] = useState('');
-    const [price, setPrice] = useState('');
-    const [category, setCategory] = useState('');
-    const [categories, setCategories] = useState([]);
-    const quillRef = useRef();
-
+const WritePost = ({title, text, price, category, categories, categoryHandler, onSubmit, onChange}) => {
     const modules = {
         toolbar: [
             [{'header' : [1,2,3,4,5,6]}],
@@ -71,72 +63,39 @@ const WritePost = () => {
         'list', 'bullet', 'indent',
         'link', 'image', 'video'
     ]
-
-    const onSubmit = async (e) => {
-        e.preventDefault();
-        
-        let editor = quillRef.current.getEditor();
-        let contents = JSON.stringify(editor.getContents());
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('contents', contents);
-        formData.append('price', price);
-        formData.append('categories', categories);
-        
-        const config = {header : {'content-type' : 'multipart/form-data'}};
-        await axios.post('/api/post/write', formData, config).then(response => {
-            console.log(response)
-        }).catch(e => {
-            console.log(e);
-        })
-    }
-
-    const categoryHandler = (event) => {
-        if(event.key === "Enter") {
-            if(categories.length < 5) {
-                setCategories(categories.concat(category));
-                setCategory('');
-            }
-        }
-    }
-
     return (
         <WritePostBlock>
             <Wrapper>
-                <form onSubmit={onSubmit}>
+                <div>
+                    <input className="title" value={title} onChange={(e) => onChange('title', e.target.value)}/>
+                    <ReactQuill
+                        theme='snow'
+                        modules={modules}
+                        formats={formats}
+                        value={text}
+                        onChange={(value) => onChange('text', value)}
+                    />
+                </div>
+                <div>
+                    <p>
+                        가격 : <input className='price' value={price} onChange={(e) => onChange('price', e.target.value)} />
+                    </p>
+                    <p>
+                        카테고리 : <input className='category' value={category} 
+                                        onChange={(e) => onChange('category', e.target.value)} 
+                                        onKeyPress={categoryHandler}
+                                />
+                    </p>
+                </div>
+                <div>
                     <div>
-                        <input className="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-                        <ReactQuill
-                            value={text}
-                            onChange={setText}
-                            theme='snow'
-                            modules={modules}
-                            formats={formats}
-                            ref={quillRef}
-                        />
+                        <CategoryList categories={categories} />
                     </div>
-                    <div>
-                        <p>
-                            가격 : <input className='price' value={price} onChange={(e) => setPrice(e.target.value)} />
-                        </p>
-                        <p>
-                            카테고리 : <input className='category' value={category} 
-                                              onChange={(e) => setCategory(e.target.value)} 
-                                              onKeyDown={categoryHandler}
-                                       />
-                        </p>
+                    <div className='button'>
+                        <Button onClick={onSubmit}>저장</Button>
+                        <Button>취소</Button>
                     </div>
-                    <div>
-                        <div>
-                            <CategoryList categories={categories} />
-                        </div>
-                        <div className='button'>
-                            <Button type="submit">저장</Button>
-                            <Button>취소</Button>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </Wrapper>
         </WritePostBlock>
     )

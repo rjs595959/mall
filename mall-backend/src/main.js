@@ -1,9 +1,10 @@
 require('dotenv').config();
 import Koa from 'koa';
 import Router from 'koa-router';
-import BodyParser from 'koa-body';
+import koaBody from 'koa-body';
 import mongoose from 'mongoose';
 import api from './api';
+import images from './images';
 import jwtMiddleware from './lib/jwtMiddleware';
 const { PORT, MONGO_URI } = process.env;
 
@@ -26,9 +27,10 @@ const app = new Koa();
 const router = new Router();
 
 router.use('/api', api.routes());
-app.use(BodyParser({'multipart' : true}));
-app.use(jwtMiddleware);
+router.use('/images', images.routes());
 
+app.use(koaBody())
+app.use(jwtMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
 
 const port = PORT || 4000;

@@ -1,3 +1,6 @@
 import client from './client'
 
-export const write = ({title, contents}) => client.post('/api/post', {title, contents});
+export const write = (formData) => {
+    client.post('/api/post/write', formData);
+}
+    

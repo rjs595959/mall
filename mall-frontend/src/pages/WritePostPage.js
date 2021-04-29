@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import NavigationContainer from '../containers/nav/NavigationContainer';
-import WritePost from '../components/posts/WritePost';
+import WritePostContainer from '../containers/posts/WritePostContainer';
 
 const WritePostPageBlock = styled.div`
     width: 100%;
@@ -13,7 +13,7 @@ const WritePostPage = () => {
         <WritePostPageBlock>
             <HeaderContainer />
             <NavigationContainer />
-            <WritePost />
+            <WritePostContainer />
         </WritePostPageBlock>
     )
 };

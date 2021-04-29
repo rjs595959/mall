@@ -10,11 +10,13 @@ const HeaderBlock = styled.div`
     box-shadow: 0px 2px 4px rgba(0,0,0,0.08);
     display: flex;
     justify-content: center;
+    height: 5rem;
     z-index: 1000;
+    top: 0;
 `;
 
 const Wrapper = styled(Responsive)`
-    height: 4rem;
+    height: 5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -38,7 +40,7 @@ const Wrapper = styled(Responsive)`
 `
 
 const Spacer = styled.div`
-    height: 4rem;
+    height: 5rem;
     margin-bottom: 1rem;
 `
 

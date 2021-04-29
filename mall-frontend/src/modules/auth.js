@@ -4,7 +4,7 @@ import { takeLatest } from 'redux-saga/effects';
 import createRequestSaga, { createRequestActionTypes } from '../lib/createRequestSaga';
 import * as authAPI from '../lib/api/auth';
 
-const CHANGE_FIELD = 'auth/CHANGED_FILED';
+const CHANGE_FIELD = 'auth/CHANGE_FILED';
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 
 const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes('auth/LOGIN');
@@ -20,7 +20,8 @@ export const changeField = createAction(
     })  
 );
 
-export const initializeForm = createAction(INITIALIZE_FORM, form => form);
+export const initializeForm = createAction(INITIALIZE_FORM, 
+    form => form);
 
 export const register = createAction(REGISTER, ({username, nickname, password, }) => (
     {
